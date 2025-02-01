@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OVO Checkout Scenarios with Stripe Payment Element</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+
+      .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card h3 {
+        color: #2c5282;
+        margin-bottom: 15px;
+      }
+
+      .card p {
+        color: #666;
+        font-size: 0.9em;
+        font-weight: bold;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 15px;
+        transition: background-color 0.3s ease;
+      }
+
+      .button:hover {
+        background-color: #45a049;
+      }
+
+      .payment-methods {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+      }
+
+      .payment-methods span {
+        display: inline-block;
+        margin: 2px 5px;
+        padding: 3px 8px;
+        background-color: #e9ecef;
+        border-radius: 3px;
+        font-size: 0.8em;
+      }
+
+      .section-title {
+        color: #333;
+        margin: 30px 0 15px 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #4caf50;
+      }
+      .code-block {
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin: 15px 0;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 10px;
+        line-height: 1.6;
+        overflow-x: auto;
+        white-space: pre;
+      }
+
+      .code-block code {
+        display: block;
+        color: #333;
+        padding-left: 0;
+        margin-left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <img
+        src="./images/Ovo_Energy_logo.svg"
+        alt="OVO Energy"
+        width="150"
+        height="75"
+      />
+      <img
+        src="./images/plus.png"
+        alt="Plus"
+        width="75"
+        height="75"
+      />
+      <img
+        src="./images/stripe.png"
+        alt="Stripe"
+        width="150"
+        height="75"
+      />
+      <img
+        src="./images/OVOScenarioCheckout.png"
+        alt="OVO Energy QRCode"
+        width="75"
+        height="75"
+        align="right"
+      />
+    </div>
+
+    <hr />
+
+    <div class="container">
+      <h2>OVO Checkout Scenarios with Stripe Payment Element</h2>
+      <h4>RP-PLT-OVO-GBP : acct_1OmJRCFZK3VpAsSR</h4>
+
+      <!-- All Payment Methods Section -->
+      <h2 class="section-title">All Payment Methods</h2>
+      <div class="cards-container">
+        <!-- Scenario 1 -->
+        <div class="card">
+          <h3>Scenario 1</h3>
+          <p>
+            PE for Any OVO product types - All Payment Methods via
+            <a href="https://dashboard.stripe.com/test/settings/payment_methods"
+              >Dashboard (+Klarna)</a
+            >
+          </p>
+         
+          <div class="payment-methods">
+            <span>Cards</span>
+            <span>BACS</span>
+            <span>PayByBank</span>
+            <span>Bank Transfer</span>
+            <span>Klarna</span>
+          </div>
+          <a href="./ovo-checkout.html?scenario=1" class="button">Proceed to Checkout</a>
+           <pre class="code-block">
+            <code>
+curl https://api.stripe.com/v1/payment_intents \
+    -u sk_test_******* \
+    -d amount=10000 \
+    -d currency=gbp \
+    -d customer={{CUSTOMER_ID}} \
+    -d automatic_payment_methods={enabled: true}
+               </code>
+          </pre>
+
+        </div>
+
+        <!-- Scenario 2 -->
+        <div class="card">
+          <h3>Scenario 2</h3>
+          <p>PE for Any OVO product types - Specific payment methods group</p>
+          <div class="payment-methods">
+            <span>Cards</span>
+            <span>BACS</span>
+            <span>PayByBank</span>
+            <span>Bank Transfer</span>
+          </div>
+          <a href="./ovo-checkout.html?scenario=2" class="button">Proceed to Checkout</a>
+<pre class="code-block">
+            <code>
+curl https://api.stripe.com/v1/payment_intents \
+    -u sk_test_******* \
+    -d amount=10000 \
+    -d currency=gbp \
+    -d customer={{CUSTOMER_ID}} \
+    -d payment_method_types[]=card \
+    -d payment_method_types[]=bacs_debit \
+    -d payment_method_types[]=pay_by_bank \
+    -d payment_method_types[]=customer_balance \
+    -d payment_method_options[customer_balance][funding_type]=bank_transfer \
+    -d payment_method_options[customer_balance][bank_transfer][type]=gb_bank_transfer
+            </code>
+          </pre>
+
+        </div>
+      </div>
+
+      <!-- Specific Payment Methods Section -->
+      <h2 class="section-title">Specific Payment Methods</h2>
+      <div class="cards-container">
+        <!-- Scenario 3 -->
+        <div class="card">
+          <h3>Scenario 3</h3>
+          <p>PE for OVO Energy Product - payment method CARD ONLY</p>
+          <div class="payment-methods">
+            <span>Cards</span>
+          </div>
+          <a href="./ovo-checkout.html?scenario=3" class="button"
+            >Proceed to Checkout</a
+          >
+          <pre class="code-block">
+            <code>
+curl https://api.stripe.com/v1/payment_intents \
+    -u sk_test_******* \
+    -d amount=10000 \
+    -d currency=gbp \
+    -d customer={{CUSTOMER_ID}} \
+    -d payment_method_types[]=card \
+            </code>
+          </pre>
+
+
+        </div>
+
+        <!-- Scenario 4 -->
+        <div class="card">
+          <h3>Scenario 4</h3>
+          <p>PE for OVO Energy Product - payment method BACS DD ONLY</p>
+          <div class="payment-methods">
+            <span>BACS DD</span>
+          </div>
+          <a href="./ovo-checkout.html?scenario=4" class="button"
+            >Proceed to Checkout</a
+          >
+<pre class="code-block">
+            <code>
+curl https://api.stripe.com/v1/payment_intents \
+    -u sk_test_******* \
+    -d amount=10000 \
+    -d currency=gbp \
+    -d customer={{CUSTOMER_ID}} \
+    -d payment_method_types[]=bacs_debit \
+            </code>
+          </pre>
+
+        </div>
+
+        <!-- Scenario 5 -->
+        <div class="card">
+          <h3>Scenario 5</h3>
+          <p>PE for OVO Energy Product - payment method PayBy Bank</p>
+          <div class="payment-methods">
+            <span>PayBy Bank</span>
+          </div>
+          <a href="./ovo-checkout.html?scenario=5" class="button"
+            >Proceed to Checkout</a
+          >
+        <pre class="code-block">
+            <code>
+curl https://api.stripe.com/v1/payment_intents \
+    -u sk_test_******* \
+    -d amount=10000 \
+    -d currency=gbp \
+    -d customer={{CUSTOMER_ID}} \
+    -d payment_method_types[]=pay_bay_bank \
+            </code>
+          </pre>
+
+        </div>
+      </div>
+
+      <!-- Wallet Accounts Section -->
+      <h2 class="section-title">Wallet Accounts</h2>
+      <div class="cards-container">
+        <!-- Scenario 6 -->
+        <div class="card">
+          <h3>Scenario 6</h3>
+          <p>
+            PE for OVO Energy Product (Account Wallet) - payment method Bank
+            Transfer
+          </p>
+          <div class="payment-methods">
+            <span>Bank Transfer</span>
+          </div>
+          <a href="./ovo-checkout.html?scenario=6" class="button"
+            >Proceed to Checkout</a
+          >
+          <pre class="code-block">
+            <code>
+curl https://api.stripe.com/v1/payment_intents \
+    -u sk_test_******* \
+    -d amount=10000 \
+    -d currency=gbp \
+    -d customer={{CUSTOMER_ID}} \
+    -d payment_method_types[]=customer_balance \
+    -d payment_method_options[customer_balance][funding_type]=bank_transfer \
+    -d payment_method_options[customer_balance][bank_transfer][type]=gb_bank_transfer
+            </code>
+          </pre>
+
+        </div>
+      </div>
+
+      <!-- Use PMC -->
+      <h2 class="section-title">Dynamic Payment Configurations</h2>
+      <div class="cards-container">
+        <!-- Scenario 6 -->
+        <div class="card">
+          <h3>Scenario 7</h3>
+          <p>
+            PE for OVO Energy Product - payment method BACS and Card via
+            <a
+              href="https://dashboard.stripe.com/test/settings/payment_methods/pmc_1QjmR4FZK3VpAsSRyenJxbCq"
+              >Payment Configs</a
+            >
+          </p>
+          <div class="payment-methods">
+            <span>BACS DD</span>
+            <span>Cards</span>
+          </div>
+          <a href="./ovo-checkout.html?scenario=7" class="button"
+            >Proceed to Checkout</a
+          ><pre class="code-block">
+            <code>
+curl https://api.stripe.com/v1/payment_intents \
+    -u sk_test_******* \
+    -d amount=10000 \
+    -d currency=gbp \
+    -d customer={{CUSTOMER_ID}} \
+    -d automatic_payment_methods={enabled: true} \
+    -d payment_method_configuration='pmc_1Q***'
+
+            </code>
+          </pre>
+
+        </div>
+      </div>
+
+      <!-- Doc References -->
+      <h2 class="section-title">References</h2>
+      <div class="cards-container">
+        <!-- References-->
+        <div class="card">
+          <h3>References</h3>
+          <a
+            href="https://docs.stripe.com/payments/payment-element"
+            class="button"
+            >Stripe Payment Element</a
+          >
+          <a href="https://docs.stripe.com/payments/cards" class="button"
+            >Cards</a
+          >
+          <a
+            href="https://docs.stripe.com/payments/payment-methods/bacs-debit"
+            class="button"
+            >BACS DD</a
+          >
+          <a
+            href="https://docs.stripe.com/payments/pay-by-bank?locale=en-GB"
+            class="button"
+            >PayByBank</a
+          >
+          <a
+            href="https://docs.stripe.com/payments/bank-transfers/accept-a-payment"
+            class="button"
+            >Bank Transfers</a
+          >
+          <a
+            href="https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods?locale=en-GB"
+            class="button"
+            >Dynamic Payment Methods</a
+          >
+          <a href="https://docs.stripe.com/testing" class="button"
+            >Test Cards</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

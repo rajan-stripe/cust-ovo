@@ -1,14 +1,21 @@
 {
   "private": true,
+  "name": "cust-ovo",
+  "version": "0.0.1",
+  "description": "OVO Demo App",
+  "main": "app/server.js",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "start": "next start"
+    "start": "node app/server.js"
   },
   "dependencies": {
+    "dotenv": "latest",
+    "express": "latest",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "stripe": "latest"
   },
   "engines": {
     "node": ">=18"
