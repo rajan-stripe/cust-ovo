@@ -2,7 +2,7 @@
   "private": true,
   "name": "cust-ovo",
   "version": "0.0.1",
-  "description": "OVO Demo App",
+  "description": "OVO Demo App on Vercel",
   "main": "app/server.js",
   "scripts": {
     "build": "next build",
